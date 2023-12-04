@@ -1,3 +1,5 @@
+<img src="https://drive.google.com/uc?id=1klvNwPIgPnJGgtH6ju1PlmosBT7Y8WrE" width="500px">
+
 ## Getting Started
 1. Make sure required dependencies like yarn & node are present.
    

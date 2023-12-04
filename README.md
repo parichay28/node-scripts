@@ -1,2 +1,2 @@
 # node-scripts
-Collection of all day to day used node scripts 
+Collection of day to day used node scripts 
