@@ -1,11 +1,15 @@
 <img src="https://drive.google.com/uc?id=1klvNwPIgPnJGgtH6ju1PlmosBT7Y8WrE" width="500px">
 
 ## Getting Started
-1. Make sure required dependencies like yarn & node are present.
+1. Install node from [here](https://nodejs.org/en).
+
+2. Install yarn by running `npm install -g yarn`.
+
+3. Install GH CLI by running `brew install gh`.
    
-2. Update `helmfilePath` in `constants.js` to the desired path.
+4. Update `helmfilePath` in `constants.js` to the desired path.
    
-3. Add below script to your bash config (zshrc or bashrc). Feel free to modify name of the function according to your liking.
+5. Add below script to your bash config (zshrc or bashrc). Feel free to modify name of the function according to your liking.
 
 ```bash
  hs() {
@@ -13,7 +17,7 @@
   node $scriptPath "$@"
  }
 ```
-4. Reload shell config (`source ~/.zshrc` or `source ~/.bashrc`)
+4. Reload shell config (`source ~/.zshrc` or `source ~/.bashrc`) for latest changes to take effect.
 
 
 ## Command format:
