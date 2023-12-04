@@ -3,7 +3,7 @@
    
 2. Update `helmfilePath` in `constants.js` to the desired path.
    
-3. Add below script to your bash config(zshrc or bashrc). Feel free to modify name of the function according to your liking
+3. Add below script to your bash config (zshrc or bashrc). Feel free to modify name of the function according to your liking.
 
 ```bash
  hs() {
@@ -15,12 +15,16 @@
 
 
 ## Command format:
-1. `hs repo_name:branch_name repo_name_2:branch_name_2` 
+<br />`hs repo_name:branch_name repo_name_2:branch_name_2 ... repo_name_n:branch_name_n`<br/><br/>or<br/><br/>`hs repo_name repo_name_2 ... repo_name_n`
+   
+   
+
+If branch name is omitted, master is assumed by default.
 
 > fetches latest commit with build passing for specified servies, updates commit id in helmfile.yaml and deploys the pods.
 
 ## Adding support for new service
 
-1. Add the workflow name, job name & step name of the build workflow for the service that you want to onboard in `constants.js`. These can be found in `.github/workflows` folder
+   Add the workflow name, job name & step name of the build workflow for the service that you want to onboard in `constants.js`. These can be found in `.github/workflows` folder
 
 
