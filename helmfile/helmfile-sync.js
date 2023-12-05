@@ -86,7 +86,8 @@ const addCommitIdsToMap = async (arg) => {
 const constructHelmfileCommand = () => {
   const nameSpaces = Object.keys(commitsMap).reduce((acc, repoName, index) => {
     const isLastItem = index === Object.keys(commitsMap).length - 1;
-    return acc + `-l namespace=${repoName}` + (isLastItem ? "" : " ");
+    const releaseName = repoName === "admin-dashboard" ? "dashboard" : repoName;
+    return acc + `-l namespace=${releaseName}` + (isLastItem ? "" : " ");
   }, "");
   return `helmfile -f ${helmfilePath} ${nameSpaces} delete && helmfile -f ${helmfilePath} ${nameSpaces} sync`;
 };

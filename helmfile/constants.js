@@ -18,6 +18,19 @@ export const workflowNameMap = {
         "Configure AWS credentials For saving the artifacts to stage bucket",
     },
   },
+  "admin-dashboard": {
+    branch: {
+      fileName: "build.yml",
+      jobName: "Beta Build",
+      stepName: "Push build to devstack consumption",
+    },
+
+    master: {
+      fileName: "build.yml",
+      jobName: "Beta Build",
+      stepName: "Push build to devstack consumption",
+    },
+  },
   workflows: {
     branch: {
       fileName: "ci.yaml",

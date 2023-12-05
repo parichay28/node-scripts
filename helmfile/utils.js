@@ -1,3 +1,4 @@
+import pc from "picocolors";
 export const errorHandler = {
   throwForInvalidRepoName: (repo) => {
     console.log(
@@ -24,7 +25,7 @@ export const errorHandler = {
   throwForWorkflowJobNotFound: (repo, branch, workflowJobName) => {
     console.log(
       pc.red(
-        `unable to find job data for workflowJobName=${workflowJobName}. EitherCheck if jobName is specified correctly in workflowNameMap for REPO=${repo} BRANCH=${branch}`
+        `unable to find job data for workflowJobName=${workflowJobName}. Check if jobName is specified correctly in workflowNameMap for REPO=${repo} BRANCH=${branch}`
       )
     );
     exit(1);

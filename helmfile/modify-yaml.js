@@ -40,10 +40,22 @@ const updateCommitIds = (data, commitsMap) => {
   const { releases } = data;
   const updatedReleases = releases.map((release) => {
     const namespace = release.namespace;
-    if (namespace in commitsMap) {
+    // "dashboard" & "admin-dashboard" are deployed via "dashboard" namespace
+    if (namespace in commitsMap || "admin-dashboard" in commitsMap) {
       const { values } = release;
       for (let keyValuePair of values) {
-        if ("image" in keyValuePair) {
+        // handle dashboard & admin-dashboard deployments
+        if (namespace === "dashboard") {
+          if (
+            "admin-dashboard" in commitsMap &&
+            "admin_image" in keyValuePair
+          ) {
+            keyValuePair["admin_image"] = commitsMap["admin-dashboard"];
+          }
+          if ("dashboard" in commitsMap && "image" in keyValuePair) {
+            keyValuePair["image"] = commitsMap[namespace];
+          }
+        } else if ("image" in keyValuePair) {
           keyValuePair["image"] = commitsMap[namespace];
         }
       }
