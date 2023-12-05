@@ -68,8 +68,8 @@ const addCommitIdsToMap = async (arg) => {
   else if (jobData.conclusion !== "success")
     errorHandler.throwForWorkflowJobNotSuccessful(
       repo,
-      branch,
-      workflowJobName
+      workflowJobName,
+      workflowRunId
     );
 
   const isStepSuccessful = checkIfStepIsSuccessful(

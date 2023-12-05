@@ -1,4 +1,6 @@
 import pc from "picocolors";
+import { exit } from "process";
+
 export const errorHandler = {
   throwForInvalidRepoName: (repo) => {
     console.log(
@@ -33,7 +35,7 @@ export const errorHandler = {
   throwForWorkflowJobNotSuccessful: (repo, workflowJobName, workflowRunId) => {
     console.log(
       pc.red(
-        `Job ${workflowJobName} is not successful. Please check the logs on ${pc.blue(
+        `Job "${workflowJobName}" is not successful for REPO=${repo}. Please check the logs on ${pc.blue(
           `https://github.com/razorpay/${repo}/actions/runs/${workflowRunId}`
         )}`
       )
