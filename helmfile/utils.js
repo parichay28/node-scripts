@@ -38,7 +38,7 @@ export const errorHandler = {
       pc.red(
         `Job "${workflowJobName}" is not successful for REPO=${repo}. Please check the logs on ${pc.blue(
           `https://github.com/razorpay/${repo}/actions/runs/${workflowRunId}`
-        )}`
+        )} or try adding --depth to search for older commits.`
       )
     );
     exit(1);
