@@ -1,11 +1,19 @@
 import { readFileSync, writeFileSync } from "fs";
+import pc from "picocolors";
 import { parse, stringify } from "yaml";
 import {
-  escapeTemplatingSyntaxRegex,
   helmfilePath,
-  undoEscapeTemplatingSyntaxRegex,
+  escapeTemplatingSyntaxRegex,
+  unescapeTemplatingSyntaxRegex,
 } from "./constants.js";
-import pc from "picocolors";
+
+const escapeTemplatingSyntax = (fileContent) => {
+  return fileContent.replace(escapeTemplatingSyntaxRegex, ' "{{$1}}"');
+};
+
+const unescapeTemplatingSyntax = (fileContent) => {
+  return fileContent.replace(unescapeTemplatingSyntaxRegex, "$1");
+};
 
 const readYaml = () => {
   try {
@@ -18,22 +26,14 @@ const readYaml = () => {
   }
 };
 
-const saveYaml = (data) => {
+const writeYaml = (data) => {
   try {
     const yamlData = stringify(data);
-    const unescapedYamlData = undoEscapeTemplatingSyntax(yamlData);
+    const unescapedYamlData = unescapeTemplatingSyntax(yamlData);
     writeFileSync(helmfilePath, unescapedYamlData, "utf8");
   } catch (e) {
     console.log(e);
   }
-};
-
-const escapeTemplatingSyntax = (fileContent) => {
-  return fileContent.replace(escapeTemplatingSyntaxRegex, ' "{{$1}}"');
-};
-
-const undoEscapeTemplatingSyntax = (fileContent) => {
-  return fileContent.replace(undoEscapeTemplatingSyntaxRegex, "$1");
 };
 
 const updateCommitIds = (data, commitsMap) => {
@@ -68,6 +68,6 @@ const updateCommitIds = (data, commitsMap) => {
 export const addCommitIdsToHelmfile = (commitsMap) => {
   const parsedYAML = readYaml();
   const updatedFileContent = updateCommitIds(parsedYAML, commitsMap);
-  saveYaml(updatedFileContent);
+  writeYaml(updatedFileContent);
   console.log(pc.green("\nSuccessfully updated helmfile.yaml\n"));
 };

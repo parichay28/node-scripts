@@ -22,12 +22,17 @@
 
 ## Command format:
 <br />`hs repo_name:branch_name repo_name_2:branch_name_2 ... repo_name_n:branch_name_n`<br/><br/>or<br/><br/>`hs repo_name repo_name_2 ... repo_name_n`
-   
-   
 
 If branch name is omitted, master is assumed by default.
 
 > fetches latest commit with build passing for specified servies, updates commit id in helmfile.yaml and deploys the pods.
+
+## Options
+| Name | Description | Required | Default Value
+| --------------- | --------------- | --------------- | --------------- |
+| depth | specifies no of commits to visit per repo-branch combination till a commit with successful build is found. | No | 1
+
+
 
 ## Adding support for new service
 

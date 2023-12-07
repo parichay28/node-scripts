@@ -1,5 +1,6 @@
 import pc from "picocolors";
 import { exit } from "process";
+import { optionsMetaDataMap, validRepoAndBranchRegex } from "./constants.js";
 
 export const errorHandler = {
   throwForInvalidRepoName: (repo) => {
@@ -42,4 +43,28 @@ export const errorHandler = {
     );
     exit(1);
   },
+};
+
+export const convertArgsArrayToMap = (args) => {
+  const argsMap = {};
+
+  for (let arg of args) {
+    if (validRepoAndBranchRegex.test(arg)) {
+      argsMap.namespaces = argsMap.namespaces
+        ? argsMap.namespaces.concat(arg)
+        : [arg];
+    } else {
+      const [argWithPrefix, value] = arg.split("=");
+      const argName = argWithPrefix.slice(2);
+      if (optionsMetaDataMap[argName].dataType === "number") {
+        const valueInNumberType = Number(value);
+        if (!Number.isNaN(valueInNumberType)) {
+          argsMap[argName] = valueInNumberType;
+        }
+      } else {
+        argsMap[argName] = value;
+      }
+    }
+  }
+  return argsMap;
 };

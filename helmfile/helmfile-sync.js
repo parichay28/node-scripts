@@ -1,8 +1,14 @@
 import { execSync, exec as execWithCallback } from "child_process";
-import { addCommitIdsToHelmfile } from "./modify-yaml.js";
-import { helmfilePath, workflowNameMap } from "./constants.js";
 import pc from "picocolors";
-import { errorHandler } from "./utils.js";
+import { addCommitIdsToHelmfile } from "./modify-yaml.js";
+import { convertArgsArrayToMap, errorHandler } from "./utils.js";
+import {
+  optionsMetaDataMap,
+  helmfilePath,
+  validOptionRegexes,
+  validRepoAndBranchRegex,
+  workflowNameMap,
+} from "./constants.js";
 
 const exec = (...args) => {
   return new Promise((resolve, reject) => {
@@ -13,10 +19,16 @@ const exec = (...args) => {
   });
 };
 
-const args = [...process.argv].filter((arg, index) => index > 1);
-
 const commitsMap = {};
 const commitPromises = [];
+
+const args = [...process.argv].filter((arg) => {
+  return [...validOptionRegexes, validRepoAndBranchRegex].some((regex) =>
+    regex.test(arg)
+  );
+});
+
+const argsMap = convertArgsArrayToMap(args);
 
 const getJobData = (jobs, jobName) => {
   return jobs.find((job) => {
@@ -29,8 +41,21 @@ const checkIfStepIsSuccessful = (steps, stepName) => {
   return step.conclusion === "success";
 };
 
-const addCommitIdsToMap = async (arg) => {
-  const [repo, branch = "master"] = arg.split(":");
+const constructHelmfileCommand = () => {
+  const nameSpaces = Object.keys(commitsMap).reduce((acc, repoName, index) => {
+    const isLastItem = index === Object.keys(commitsMap).length - 1;
+    const releaseName = repoName === "admin-dashboard" ? "dashboard" : repoName;
+    return acc + `-l namespace=${releaseName}` + (isLastItem ? "" : " ");
+  }, "");
+  return `helmfile -f ${helmfilePath} ${nameSpaces} delete && helmfile -f ${helmfilePath} ${nameSpaces} sync`;
+};
+
+const addCommitIdToMap = async (namespace, attemptCount) => {
+  const maxAttemptCount =
+    argsMap.depth || optionsMetaDataMap.depth.defaultValue;
+  if (attemptCount > maxAttemptCount) return;
+
+  const [repo, branch = "master"] = namespace.split(":");
 
   if (!workflowNameMap[repo]) errorHandler.throwForInvalidRepoName(repo);
 
@@ -41,7 +66,7 @@ const addCommitIdsToMap = async (arg) => {
   const workflowJobName = workflowNameMap[repo][mapPropertyName].jobName;
   const workflowJobStepName = workflowNameMap[repo][mapPropertyName].stepName;
 
-  const workflowIdCommand = `gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "/repos/razorpay/${repo}/actions/workflows/${workflowFileName}/runs?branch=${encodedBranchName}&per_page=1" -q ".workflow_runs[0].id"`;
+  const workflowIdCommand = `gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "/repos/razorpay/${repo}/actions/workflows/${workflowFileName}/runs?branch=${encodedBranchName}&per_page=1&page=${attemptCount}" -q ".workflow_runs[0].id"`;
 
   const workflowRunId = (
     await exec(workflowIdCommand, {
@@ -58,19 +83,22 @@ const addCommitIdsToMap = async (arg) => {
   );
 
   if (!workflowJobsData || !workflowJobsData.jobs)
-    errorHandler.throwForWorkflowJobs(repo, branch);
+    errorHandler.throwForWorkflowJobsFetch(repo, branch);
 
   let commitId = undefined;
   const jobData = getJobData(workflowJobsData.jobs, workflowJobName);
 
   if (!jobData)
     errorHandler.throwForWorkflowJobNotFound(repo, branch, workflowJobName);
-  else if (jobData.conclusion !== "success")
-    errorHandler.throwForWorkflowJobNotSuccessful(
-      repo,
-      workflowJobName,
-      workflowRunId
-    );
+  else if (jobData.conclusion !== "success") {
+    if (attemptCount === maxAttemptCount)
+      errorHandler.throwForWorkflowJobNotSuccessful(
+        repo,
+        workflowJobName,
+        workflowRunId
+      );
+    return addCommitIdsToMap(namespace, attemptCount + 1);
+  }
 
   const isStepSuccessful = checkIfStepIsSuccessful(
     jobData.steps,
@@ -83,18 +111,9 @@ const addCommitIdsToMap = async (arg) => {
   return commitId;
 };
 
-const constructHelmfileCommand = () => {
-  const nameSpaces = Object.keys(commitsMap).reduce((acc, repoName, index) => {
-    const isLastItem = index === Object.keys(commitsMap).length - 1;
-    const releaseName = repoName === "admin-dashboard" ? "dashboard" : repoName;
-    return acc + `-l namespace=${releaseName}` + (isLastItem ? "" : " ");
-  }, "");
-  return `helmfile -f ${helmfilePath} ${nameSpaces} delete && helmfile -f ${helmfilePath} ${nameSpaces} sync`;
-};
-
 const init = () => {
-  for (let arg of args) {
-    commitPromises.push(addCommitIdsToMap(arg));
+  for (let namespace of argsMap.namespaces) {
+    commitPromises.push(addCommitIdToMap(namespace, 1));
   }
 
   Promise.all(commitPromises).then((data) => {
