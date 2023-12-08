@@ -1,14 +1,8 @@
 import { execSync, exec as execWithCallback } from "child_process";
 import pc from "picocolors";
 import { addCommitIdsToHelmfile } from "./modify-yaml.js";
-import { convertArgsArrayToMap, errorHandler } from "./utils.js";
-import {
-  optionsMetaDataMap,
-  helmfilePath,
-  validOptionRegexes,
-  validRepoAndBranchRegex,
-  workflowNameMap,
-} from "./constants.js";
+import { errorHandler, getParsedArgs } from "./utils.js";
+import { helmfilePath, workflowNameMap } from "./constants.js";
 
 const exec = (...args) => {
   return new Promise((resolve, reject) => {
@@ -22,13 +16,7 @@ const exec = (...args) => {
 const commitsMap = {};
 const commitPromises = [];
 
-const args = [...process.argv].filter((arg) => {
-  return [...validOptionRegexes, validRepoAndBranchRegex].some((regex) =>
-    regex.test(arg)
-  );
-});
-
-const argsMap = convertArgsArrayToMap(args);
+const argsMap = getParsedArgs();
 
 const getJobData = (jobs, jobName) => {
   return jobs.find((job) => {
@@ -51,11 +39,12 @@ const constructHelmfileCommand = () => {
 };
 
 const addCommitIdToMap = async (namespace, attemptCount) => {
-  const maxAttemptCount =
-    argsMap.depth || optionsMetaDataMap.depth.defaultValue;
+  const maxAttemptCount = argsMap.depth;
+  const commonBranch = argsMap.branch;
   if (attemptCount > maxAttemptCount) return;
 
-  const [repo, branch = "master"] = namespace.split(":");
+  let [repo, branch = "master"] = namespace.split(":");
+  if (commonBranch) branch = commonBranch;
 
   if (!workflowNameMap[repo]) errorHandler.throwForInvalidRepoName(repo);
 
@@ -74,7 +63,8 @@ const addCommitIdToMap = async (namespace, attemptCount) => {
     })
   ).trim();
 
-  if (!workflowRunId) errorHandler.throwForWorkflowRunId(repo, branch);
+  if (!workflowRunId)
+    errorHandler.throwForWorkflowRunId(repo, branch, commonBranch);
 
   const jobsStatusCommand = `gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" repos/razorpay/${repo}/actions/runs/${workflowRunId}/jobs`;
 

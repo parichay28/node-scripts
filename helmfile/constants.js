@@ -3,18 +3,7 @@ export const unescapeTemplatingSyntaxRegex = /"({{.*}})"/g;
 
 export const helmfilePath = "path/to/kube-manifests/helmfile/helmfile.yaml";
 
-export const optionsMetaDataMap = {
-  depth: {
-    dataType: "number",
-    defaultValue: 1,
-    isRequired: false,
-    regex: /--depth=/,
-  },
-};
 export const validRepoAndBranchRegex = /^[^-][a-z0-9_-]*(:[a-z0-9_-]+)?$/;
-export const validOptionRegexes = Object.values(optionsMetaDataMap).map(
-  (metaData) => metaData.regex
-);
 
 export const workflowNameMap = {
   x: {

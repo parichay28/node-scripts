@@ -6,6 +6,7 @@
   "engineStrict": false,
   "dependencies": {
     "picocolors": "^1.0.0",
-    "yaml": "^2.3.4"
+    "yaml": "^2.3.4",
+    "yargs": "^17.7.2"
   }
 }

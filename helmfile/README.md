@@ -28,10 +28,7 @@ If branch name is omitted, master is assumed by default.
 > fetches latest commit with build passing for specified servies, updates commit id in helmfile.yaml and deploys the pods.
 
 ## Options
-| Name | Description | Required | Default Value
-| --------------- | --------------- | --------------- | --------------- |
-| depth | specifies no of commits to visit per repo-branch combination till a commit with successful build is found. | No | 1
-
+`hs --help` to check out out all valid options
 
 
 ## Adding support for new service
