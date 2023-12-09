@@ -36,6 +36,16 @@ const writeYaml = (data) => {
   }
 };
 
+const updateLabel = (data, label) => {
+  const { values } = data.environments.default;
+  values.forEach((value) => {
+    if ("devstack_label" in value) {
+      value["devstack_label"] = label;
+    }
+  });
+  return data;
+};
+
 const updateCommitIds = (data, commitsMap) => {
   const { releases } = data;
   const updatedReleases = releases.map((release) => {
@@ -65,9 +75,10 @@ const updateCommitIds = (data, commitsMap) => {
   return { ...data, releases: updatedReleases };
 };
 
-export const addCommitIdsToHelmfile = (commitsMap) => {
+export const updateHelmfile = (commitsMap, label) => {
   const parsedYAML = readYaml();
-  const updatedFileContent = updateCommitIds(parsedYAML, commitsMap);
+  let updatedFileContent = updateCommitIds(parsedYAML, commitsMap);
+  if (label) updatedFileContent = updateLabel(parsedYAML, label);
   writeYaml(updatedFileContent);
   console.log(pc.green("\nSuccessfully updated helmfile.yaml\n"));
 };

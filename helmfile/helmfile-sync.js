@@ -1,6 +1,6 @@
 import { execSync, exec as execWithCallback } from "child_process";
 import pc from "picocolors";
-import { addCommitIdsToHelmfile } from "./modify-yaml.js";
+import { updateHelmfile } from "./modify-yaml.js";
 import { errorHandler, getParsedArgs } from "./utils.js";
 import { helmfilePath, workflowNameMap } from "./constants.js";
 
@@ -112,7 +112,7 @@ const init = () => {
       commitsMap,
       pc.blue("Adding them to helmfile.yaml")
     );
-    addCommitIdsToHelmfile(commitsMap);
+    updateHelmfile(commitsMap, argsMap.label);
     const command = constructHelmfileCommand();
     console.log(pc.gray(command + "\n"));
     execSync(constructHelmfileCommand(), {

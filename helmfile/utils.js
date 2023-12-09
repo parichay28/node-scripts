@@ -55,6 +55,9 @@ export const errorHandler = {
   },
 };
 
+const deduplicateMultipleValuesForArg = (argValue) =>
+  Array.isArray(argValue) ? argValue[argValue.length - 1] : argValue;
+
 export const getParsedArgs = () => {
   const { _, $0, ...args } = yargs(process.argv.slice(2))
     .option("n", {
@@ -84,8 +87,7 @@ export const getParsedArgs = () => {
       type: "number",
       default: 1,
       demandOption: false,
-      coerce: (depth) =>
-        Array.isArray(depth) ? depth[depth.length - 1] : depth,
+      coerce: deduplicateMultipleValuesForArg,
     })
     .option("b", {
       alias: "branch",
@@ -93,8 +95,15 @@ export const getParsedArgs = () => {
       type: "string",
       default: "",
       demandOption: false,
-      coerce: (branch) =>
-        Array.isArray(branch) ? branch[branch.length - 1] : branch,
+      coerce: deduplicateMultipleValuesForArg,
+    })
+    .option("l", {
+      alias: "label",
+      describe: "label to be used for namespaces",
+      type: "string",
+      default: "",
+      demandOption: false,
+      coerce: deduplicateMultipleValuesForArg,
     }).argv;
   return args;
 };
