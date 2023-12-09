@@ -1,0 +1,11 @@
+{
+  "name": "node-scripts",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "engineStrict": false,
+  "dependencies": {
+    "picocolors": "^1.0.0",
+    "yaml": "^2.3.4"
+  }
+}
