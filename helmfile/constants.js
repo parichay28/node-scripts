@@ -1,7 +1,10 @@
+import { errorHandler } from "./utils.js";
+
 export const escapeTemplatingSyntaxRegex = / {{(.*?)}}/g;
 export const unescapeTemplatingSyntaxRegex = /"({{.*}})"/g;
 
-export const helmfilePath = "path/to/kube-manifests/helmfile/helmfile.yaml";
+if (!process.env.HELMFILE_PATH) errorHandler.throwForHelmfilePath();
+export const helmfilePath = process.env.HELMFILE_PATH;
 
 export const validRepoAndBranchRegex = /^[^-][a-z0-9_-]*(:[a-z0-9_-]+)?$/;
 

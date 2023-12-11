@@ -4,6 +4,14 @@ import yargs from "yargs";
 import { validRepoAndBranchRegex } from "./constants.js";
 
 export const errorHandler = {
+  throwForHelmfilePath: () => {
+    console.log(
+      pc.red(
+        "Please set absolute path of helmfile in HELMFILE_PATH env variable"
+      )
+    );
+    exit(1);
+  },
   throwForInvalidRepoName: (repo) => {
     console.log(
       `\nunable to find ${pc.red(
@@ -43,13 +51,11 @@ export const errorHandler = {
   },
   throwForWorkflowJobNotSuccessful: (repo, workflowJobName, workflowRunId) => {
     console.log(
-      pc.red(
-        `Job "${workflowJobName}" is not successful for ${pc.red(
-          `REPO=${repo}`
-        )}. Please check the logs on ${pc.blue(
-          `https://github.com/razorpay/${repo}/actions/runs/${workflowRunId}`
-        )} or try adding --depth to search for older commits.`
-      )
+      `Job "${workflowJobName}" is not successful for ${pc.red(
+        `REPO=${repo}`
+      )}. Please check the logs on ${pc.blue(
+        `https://github.com/razorpay/${repo}/actions/runs/${workflowRunId}`
+      )} or try adding depth arg to search for older commits.`
     );
     exit(1);
   },

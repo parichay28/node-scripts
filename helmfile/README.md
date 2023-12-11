@@ -1,4 +1,4 @@
-<img src="https://drive.google.com/uc?id=1klvNwPIgPnJGgtH6ju1PlmosBT7Y8WrE" width="500px">
+<img src="https://drive.google.com/uc?id=1aJEF9moem6_-XfCKSAUmQ8IQ46XwUNRR" width="500px">
 
 ## Getting Started
 1. Install node from [here](https://nodejs.org/en).
@@ -7,7 +7,7 @@
 
 3. Install GH CLI by running `brew install gh`.
    
-4. Update `helmfilePath` in `constants.js` to the desired path.
+4. Add `HEMLFILE_PATH` env variable to your bash config (zshrc or bashrc) containing absolute path to `helmfile.yaml`.
    
 5. Add below script to your bash config (zshrc or bashrc). Feel free to modify name of the function according to your liking.
 
@@ -21,7 +21,7 @@
 
 
 ## Command format:
-<br />`hs repo_name:branch_name repo_name_2:branch_name_2 ... repo_name_n:branch_name_n`<br/><br/>or<br/><br/>`hs repo_name repo_name_2 ... repo_name_n`
+<br />`hs -n repo_name:branch_name repo_name_2:branch_name_2 ... repo_name_n:branch_name_n`<br/><br/>or<br/><br/>`hs -n repo_name repo_name_2 ... repo_name_n`
 
 If branch name is omitted, master is assumed by default.
 
@@ -33,6 +33,6 @@ If branch name is omitted, master is assumed by default.
 
 ## Adding support for new service
 
-   Add the workflow name, job name & step name of the build workflow for the service that you want to onboard in `constants.js`. These can be found in `.github/workflows` folder
+Add the workflow name, job name & step name of the build workflow for the service that you want to onboard in `constants.js`. These can be found in `.github/workflows` folder
 
 
