@@ -6,7 +6,7 @@ export const unescapeTemplatingSyntaxRegex = /"({{.*}})"/g;
 if (!process.env.HELMFILE_PATH) errorHandler.throwForHelmfilePath();
 export const helmfilePath = process.env.HELMFILE_PATH;
 
-export const validRepoAndBranchRegex = /^[^-][a-z0-9_-]*(:[a-z0-9_-]+)?$/;
+export const validRepoAndBranchRegex = /^[^-][a-z0-9_-]*(:[a-z0-9\/_-]+)?$/;
 
 // Git commit IDs can be either 40-character or 7-character hexadecimal strings
 export const commitIdRegex = /^[0-9a-fA-F]{7,40}$/;
