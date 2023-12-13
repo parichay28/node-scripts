@@ -1,7 +1,7 @@
 import { execSync, exec as execWithCallback } from "child_process";
 import pc from "picocolors";
 import { updateHelmfile } from "./modify-yaml.js";
-import { errorHandler, getParsedArgs } from "./utils.js";
+import { errorHandler, getParsedArgs, isCommitId } from "./utils.js";
 import { helmfilePath, workflowNameMap } from "./constants.js";
 
 const exec = (...args) => {
@@ -43,8 +43,14 @@ const addCommitIdToMap = async (namespace, attemptCount) => {
   const commonBranch = argsMap.branch;
   if (attemptCount > maxAttemptCount) return;
 
-  let [repo, branch = "master"] = namespace.split(":");
-  if (commonBranch) branch = commonBranch;
+  let [repo, target] = namespace.split(":");
+
+  let commitId = isCommitId(target) ? target : undefined;
+  let branch = !commitId
+    ? target
+      ? target
+      : commonBranch || "master"
+    : undefined;
 
   if (!workflowNameMap[repo]) errorHandler.throwForInvalidRepoName(repo);
 
@@ -55,47 +61,48 @@ const addCommitIdToMap = async (namespace, attemptCount) => {
   const workflowJobName = workflowNameMap[repo][mapPropertyName].jobName;
   const workflowJobStepName = workflowNameMap[repo][mapPropertyName].stepName;
 
-  const workflowIdCommand = `gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "/repos/razorpay/${repo}/actions/workflows/${workflowFileName}/runs?branch=${encodedBranchName}&per_page=1&page=${attemptCount}" -q ".workflow_runs[0].id"`;
+  if (!commitId) {
+    const workflowIdCommand = `gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "/repos/razorpay/${repo}/actions/workflows/${workflowFileName}/runs?branch=${encodedBranchName}&per_page=1&page=${attemptCount}" -q ".workflow_runs[0].id"`;
 
-  const workflowRunId = (
-    await exec(workflowIdCommand, {
-      encoding: "utf-8",
-    })
-  ).trim();
+    const workflowRunId = (
+      await exec(workflowIdCommand, {
+        encoding: "utf-8",
+      })
+    ).trim();
 
-  if (!workflowRunId)
-    errorHandler.throwForWorkflowRunId(repo, branch, commonBranch);
+    if (!workflowRunId)
+      errorHandler.throwForWorkflowRunId(repo, branch, commonBranch);
 
-  const jobsStatusCommand = `gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" repos/razorpay/${repo}/actions/runs/${workflowRunId}/jobs`;
+    const jobsDataCommand = `gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" repos/razorpay/${repo}/actions/runs/${workflowRunId}/jobs`;
 
-  const workflowJobsData = JSON.parse(
-    (await exec(jobsStatusCommand, { encoding: "utf-8" })).trim()
-  );
+    const workflowJobsData = JSON.parse(
+      (await exec(jobsDataCommand, { encoding: "utf-8" })).trim()
+    );
 
-  if (!workflowJobsData || !workflowJobsData.jobs)
-    errorHandler.throwForWorkflowJobsFetch(repo, branch);
+    if (!workflowJobsData || !workflowJobsData.jobs)
+      errorHandler.throwForWorkflowJobsFetch(repo, branch);
 
-  let commitId = undefined;
-  const jobData = getJobData(workflowJobsData.jobs, workflowJobName);
+    const jobData = getJobData(workflowJobsData.jobs, workflowJobName);
 
-  if (!jobData)
-    errorHandler.throwForWorkflowJobNotFound(repo, branch, workflowJobName);
-  else if (jobData.conclusion !== "success") {
-    if (attemptCount === maxAttemptCount)
-      errorHandler.throwForWorkflowJobNotSuccessful(
-        repo,
-        workflowJobName,
-        workflowRunId
-      );
-    return addCommitIdsToMap(namespace, attemptCount + 1);
-  }
+    if (!jobData)
+      errorHandler.throwForWorkflowJobNotFound(repo, branch, workflowJobName);
+    else if (jobData.conclusion !== "success") {
+      if (attemptCount === maxAttemptCount)
+        errorHandler.throwForWorkflowJobNotSuccessful(
+          repo,
+          workflowJobName,
+          workflowRunId
+        );
+      return addCommitIdsToMap(namespace, attemptCount + 1);
+    }
 
-  const isStepSuccessful = checkIfStepIsSuccessful(
-    jobData.steps,
-    workflowJobStepName
-  );
-  if (isStepSuccessful) {
-    commitId = jobData.head_sha;
+    const isStepSuccessful = checkIfStepIsSuccessful(
+      jobData.steps,
+      workflowJobStepName
+    );
+    if (isStepSuccessful) {
+      commitId = jobData.head_sha;
+    }
   }
   if (commitId) commitsMap[repo] = commitId;
   return commitId;

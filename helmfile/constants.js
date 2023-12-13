@@ -8,6 +8,9 @@ export const helmfilePath = process.env.HELMFILE_PATH;
 
 export const validRepoAndBranchRegex = /^[^-][a-z0-9_-]*(:[a-z0-9_-]+)?$/;
 
+// Git commit IDs can be either 40-character or 7-character hexadecimal strings
+export const commitIdRegex = /^[0-9a-fA-F]{7,40}$/;
+
 export const workflowNameMap = {
   x: {
     branch: {

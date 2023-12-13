@@ -19,16 +19,17 @@
 ```
 4. Reload shell config (`source ~/.zshrc` or `source ~/.bashrc`) for latest changes to take effect.
 
-
-## Command format:
-<br />`hs -n repo_name:branch_name repo_name_2:branch_name_2 ... repo_name_n:branch_name_n`<br/><br/>or<br/><br/>`hs -n repo_name repo_name_2 ... repo_name_n`
-
-If branch name is omitted, master is assumed by default.
-
-> fetches latest commit with build passing for specified servies, updates commit id in helmfile.yaml and deploys the pods.
-
 ## Options
 `hs --help` to check out out all valid options
+
+
+## Example Usage:
+- `hs -n repo_name repo_name_2 ... repo_name_n`<br />
+- `hs -n repo_name:branch_name repo_name_2:branch_name_2 ...`<br />
+- `hs -n repo_name:commit_id repo_name_2:branch_name_2 ...`<br />
+<br />
+> - If branch or commit_id is omitted, `master` branch is assumed by default.
+> - If commit_id is specified it's used directly in helmfile.
 
 
 ## Adding support for new service

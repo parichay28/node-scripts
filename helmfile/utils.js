@@ -1,7 +1,7 @@
 import pc from "picocolors";
 import { exit } from "process";
 import yargs from "yargs";
-import { validRepoAndBranchRegex } from "./constants.js";
+import { commitIdRegex, validRepoAndBranchRegex } from "./constants.js";
 
 export const errorHandler = {
   throwForHelmfilePath: () => {
@@ -68,7 +68,7 @@ export const getParsedArgs = () => {
   const { _, $0, ...args } = yargs(process.argv.slice(2))
     .option("n", {
       alias: "namespaces",
-      describe: "Specify namespaces in repo:branch format",
+      describe: "Specify namespaces in repo:branch or repo:commit_id format",
       type: "array",
       demandOption: true,
       coerce: (namespaces) => {
@@ -112,4 +112,8 @@ export const getParsedArgs = () => {
       coerce: deduplicateMultipleValuesForArg,
     }).argv;
   return args;
+};
+
+export const isCommitId = (target) => {
+  return commitIdRegex.test(target);
 };
