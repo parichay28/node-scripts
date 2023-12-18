@@ -75,4 +75,16 @@ export const workflowNameMap = {
       stepName: "build",
     },
   },
+  dashboard: {
+    branch: {
+      fileName: "build.yml",
+      jobName: "Build Dashboard",
+      stepName: "build",
+    },
+    master: {
+      fileName: "build.yml",
+      jobName: "Build Dashboard",
+      stepName: "build",
+    },
+  },
 };
