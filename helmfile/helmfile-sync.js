@@ -93,7 +93,7 @@ const addCommitIdToMap = async (namespace, attemptCount) => {
           workflowJobName,
           workflowRunId
         );
-      return addCommitIdsToMap(namespace, attemptCount + 1);
+      return addCommitIdToMap(namespace, attemptCount + 1);
     }
 
     const isStepSuccessful = checkIfStepIsSuccessful(
