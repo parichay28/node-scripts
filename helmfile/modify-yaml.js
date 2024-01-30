@@ -5,6 +5,9 @@ import {
   helmfilePath,
   escapeTemplatingSyntaxRegex,
   unescapeTemplatingSyntaxRegex,
+  namespaceToRepoNamesMap,
+  workflowNameMap,
+  defaultImageKeyName,
 } from "./constants.js";
 
 const escapeTemplatingSyntax = (fileContent) => {
@@ -50,27 +53,22 @@ const updateCommitIds = (data, commitsMap) => {
   const { releases } = data;
   const updatedReleases = releases.map((release) => {
     const namespace = release.namespace;
-    // "dashboard" & "admin-dashboard" are deployed via "dashboard" namespace
-    if (namespace in commitsMap || "admin-dashboard" in commitsMap) {
-      const { values } = release;
-      for (let keyValuePair of values) {
-        // handle dashboard & admin-dashboard deployments
-        if (namespace === "dashboard") {
-          if (
-            "admin-dashboard" in commitsMap &&
-            "admin_image" in keyValuePair
-          ) {
-            keyValuePair["admin_image"] = commitsMap["admin-dashboard"];
+    let repoNames = namespaceToRepoNamesMap[namespace];
+    repoNames = repoNames?.length > 0 ? repoNames : [namespace];
+
+    repoNames.forEach((repoName) => {
+      if (repoName in commitsMap) {
+        const { values } = release;
+        for (let keyValuePair of values) {
+          const imageKeyName =
+            workflowNameMap[repoName]?.imageKeyName || defaultImageKeyName;
+          if (imageKeyName in keyValuePair) {
+            keyValuePair[imageKeyName] = commitsMap[repoName];
           }
-          if ("dashboard" in commitsMap && "image" in keyValuePair) {
-            keyValuePair["image"] = commitsMap[namespace];
-          }
-        } else if ("image" in keyValuePair) {
-          keyValuePair["image"] = commitsMap[namespace];
         }
       }
-      return release;
-    } else return release;
+    });
+    return release;
   });
   return { ...data, releases: updatedReleases };
 };

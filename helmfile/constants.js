@@ -11,6 +11,8 @@ export const validRepoAndBranchRegex = /^[^-][a-z0-9_-]*(:[a-z0-9\/_-]+)?$/;
 // Git commit IDs can be either 40-character or 7-character hexadecimal strings
 export const commitIdRegex = /^[0-9a-fA-F]{7,40}$/;
 
+export const defaultImageKeyName = "image";
+
 export const workflowNameMap = {
   x: {
     branch: {
@@ -27,6 +29,8 @@ export const workflowNameMap = {
     },
   },
   "admin-dashboard": {
+    namespace: "dashboard",
+    imageKeyName: "admin_image",
     branch: {
       fileName: "build.yml",
       jobName: "Beta Build",
@@ -87,4 +91,22 @@ export const workflowNameMap = {
       stepName: "build",
     },
   },
+  "banking-accounts": {
+    namespace: "banking-account",
+    branch: {
+      fileName: "ci.yml",
+      jobName: "Build Dashboard",
+      stepName: "build",
+    },
+    master: {
+      fileName: "ci.yml",
+      jobName: "Build service image for each commit",
+      stepName: "Build and push",
+    },
+  },
+};
+
+export const namespaceToRepoNamesMap = {
+  "banking-account": ["banking-accounts"],
+  dashboard: ["dashboard", "admin-dashboard"],
 };

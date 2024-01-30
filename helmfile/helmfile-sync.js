@@ -32,8 +32,8 @@ const checkIfStepIsSuccessful = (steps, stepName) => {
 const constructHelmfileCommand = () => {
   const nameSpaces = Object.keys(commitsMap).reduce((acc, repoName, index) => {
     const isLastItem = index === Object.keys(commitsMap).length - 1;
-    const releaseName = repoName === "admin-dashboard" ? "dashboard" : repoName;
-    return acc + `-l namespace=${releaseName}` + (isLastItem ? "" : " ");
+    const namespace = workflowNameMap[repoName]?.namespace || repoName;
+    return acc + `-l namespace=${namespace}` + (isLastItem ? "" : " ");
   }, "");
   return `helmfile -f ${helmfilePath} ${nameSpaces} delete && helmfile -f ${helmfilePath} ${nameSpaces} sync`;
 };
