@@ -104,9 +104,35 @@ export const workflowNameMap = {
       stepName: "Build and push",
     },
   },
+  "master-onboarding": {
+    branch: {
+      fileName: "ci.yaml",
+      jobName: "Docker image - api",
+      stepName: "Build and push",
+    },
+    master: {
+      fileName: "ci.yaml",
+      jobName: "Docker image - api",
+      stepName: "Build and push",
+    },
+  },
+  "business-verification-service": {
+    namespace: "bvs",
+    branch: {
+      fileName: "ci.yml",
+      jobName: "Build API Docker Image",
+      stepName: "Build and push",
+    },
+    master: {
+      fileName: "ci.yml",
+      jobName: "Build API Docker Image",
+      stepName: "Build and push",
+    },
+  },
 };
 
 export const namespaceToRepoNamesMap = {
   "banking-account": ["banking-accounts"],
   dashboard: ["dashboard", "admin-dashboard"],
+  bvs: ["business-verification-service"],
 };
