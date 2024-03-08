@@ -6,7 +6,8 @@ export const unescapeTemplatingSyntaxRegex = /"({{.*}})"/g;
 if (!process.env.HELMFILE_PATH) errorHandler.throwForHelmfilePath();
 export const helmfilePath = process.env.HELMFILE_PATH;
 
-export const validRepoAndBranchRegex = /^[^-][a-z0-9_-]*(:[a-z0-9\/_-]+)?$/;
+export const validRepoAndBranchRegex =
+  /^[^-][a-zA-Z0-9_-]*(:[a-zA-Z0-9\/_-]+)?$/;
 
 // Git commit IDs can be either 40-character or 7-character hexadecimal strings
 export const commitIdRegex = /^[0-9a-fA-F]{7,40}$/;
@@ -58,24 +59,24 @@ export const workflowNameMap = {
   xperience: {
     branch: {
       fileName: "ci.yml",
-      jobName: "Docker image - api",
-      stepName: "build",
+      jobName: "Docker image - api (ARM64)",
+      stepName: "Build and Push to Harbor",
     },
     master: {
       fileName: "ci.yml",
-      jobName: "Docker image - api",
-      stepName: "build",
+      jobName: "Docker image - api (ARM64)",
+      stepName: "Build and Push to Harbor",
     },
   },
   api: {
     branch: {
       fileName: "build_images.yml",
-      jobName: "Build Web Native (linux-amd64)",
+      jobName: "Build Web Native (linux-arm64)",
       stepName: "build",
     },
     master: {
       fileName: "build_images.yml",
-      jobName: "Build Web Native (linux-amd64)",
+      jobName: "Build Web Native (linux-arm64)",
       stepName: "build",
     },
   },
@@ -83,12 +84,12 @@ export const workflowNameMap = {
     branch: {
       fileName: "build.yml",
       jobName: "Build Dashboard",
-      stepName: "build",
+      stepName: "Post Install dependencies with caching",
     },
     master: {
       fileName: "build.yml",
       jobName: "Build Dashboard",
-      stepName: "build",
+      stepName: "Post Install dependencies with caching",
     },
   },
   "banking-accounts": {
@@ -127,6 +128,66 @@ export const workflowNameMap = {
       fileName: "ci.yml",
       jobName: "Build API Docker Image",
       stepName: "Build and push",
+    },
+  },
+  "business-reporting": {
+    branch: {
+      fileName: "ci.yml",
+      jobName: "Docker image - base",
+      stepName: "Build And Push",
+    },
+    master: {
+      fileName: "ci.yml",
+      jobName: "Docker image - base",
+      stepName: "Build And Push",
+    },
+  },
+  terminals: {
+    branch: {
+      fileName: "ci.yml",
+      jobName: "Api Build",
+      stepName: "Post build",
+    },
+    master: {
+      fileName: "ci.yml",
+      jobName: "Api Build",
+      stepName: "Post build",
+    },
+  },
+  router: {
+    branch: {
+      fileName: "ci.yml",
+      jobName: "Build Image",
+      stepName: "Post build and push",
+    },
+    master: {
+      fileName: "ci.yml",
+      jobName: "Build Image",
+      stepName: "Post build and push",
+    },
+  },
+  mozart: {
+    branch: {
+      fileName: "CI.yml",
+      jobName: "Build Mozart",
+      stepName: "Build mozart and push image to Harbor",
+    },
+    master: {
+      fileName: "CI.yml",
+      jobName: "Build Mozart",
+      stepName: "Build mozart and push image to Harbor",
+    },
+  },
+  onboarding: {
+    branch: {
+      fileName: "ci.yml",
+      jobName: "Build API Docker Image",
+      stepName: "build api",
+    },
+    master: {
+      fileName: "ci.yml",
+      jobName: "Build API Docker Image",
+      stepName: "build api",
     },
   },
 };
