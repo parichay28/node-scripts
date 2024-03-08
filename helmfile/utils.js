@@ -59,6 +59,14 @@ export const errorHandler = {
     );
     exit(1);
   },
+  throwForStepNotFound: (repo, stepName) => {
+    console.log(
+      `unable to find ${pc.red(`STEP_NAME=${stepName}`)} for ${pc.red(
+        `REPO=${repo}`
+      )}. Check if stepName is specified correctly in workflowNameMap.`
+    );
+    exit(1);
+  },
 };
 
 const deduplicateMultipleValuesForArg = (argValue) =>

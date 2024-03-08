@@ -24,8 +24,9 @@ const getJobData = (jobs, jobName) => {
   });
 };
 
-const checkIfStepIsSuccessful = (steps, stepName) => {
+const checkIfStepIsSuccessful = (steps, stepName, repo) => {
   const step = steps.find((step) => step.name === stepName);
+  if (!step?.conclusion) errorHandler.throwForStepNotFound(repo, stepName);
   return step.conclusion === "success";
 };
 
@@ -98,7 +99,8 @@ const addCommitIdToMap = async (namespace, attemptCount) => {
 
     const isStepSuccessful = checkIfStepIsSuccessful(
       jobData.steps,
-      workflowJobStepName
+      workflowJobStepName,
+      repo
     );
     if (isStepSuccessful) {
       commitId = jobData.head_sha;
