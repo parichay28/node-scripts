@@ -24,9 +24,11 @@
 
 
 ## Example Usage:
-- `hs -n repo_name repo_name_2 ... repo_name_n`<br />
-- `hs -n repo_name:branch_name repo_name_2:branch_name_2 ...`<br />
-- `hs -n repo_name:commit_id repo_name_2:branch_name_2 ...`<br />
+- `hs -n repo_name_1 repo_name_2 ... repo_name_n`<br />
+- `hs -n repo_name_1:branch_name repo_name_2:branch_name_2 ...`<br />
+- `hs -n repo_name_1:commit_id repo_name_2:branch_name_2 ...`<br />
+- `hs -n repo_name_1:repo_package_name:commit_id repo_name_2:branch_name_2 ...`<br />
+
 <br />
 > - If branch or commit_id is omitted, `master` branch is assumed by default.
 > - If commit_id is specified it's used directly in helmfile.

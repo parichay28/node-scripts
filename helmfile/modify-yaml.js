@@ -60,10 +60,17 @@ const updateCommitIds = (data, commitsMap) => {
       if (repoName in commitsMap) {
         const { values } = release;
         for (let keyValuePair of values) {
+          const repoPackageName = commitsMap[repoName].repoPackage;
+
+          const repoWorkflowData = repoPackageName
+            ? workflowNameMap[repoName][repoPackageName]
+            : workflowNameMap[repoName];
+
           const imageKeyName =
-            workflowNameMap[repoName]?.imageKeyName || defaultImageKeyName;
+            repoWorkflowData?.imageKeyName || defaultImageKeyName;
+
           if (imageKeyName in keyValuePair) {
-            keyValuePair[imageKeyName] = commitsMap[repoName];
+            keyValuePair[imageKeyName] = commitsMap[repoName].commitId;
           }
         }
       }

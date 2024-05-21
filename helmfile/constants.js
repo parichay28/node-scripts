@@ -7,7 +7,7 @@ if (!process.env.HELMFILE_PATH) errorHandler.throwForHelmfilePath();
 export const helmfilePath = process.env.HELMFILE_PATH;
 
 export const validRepoAndBranchRegex =
-  /^[^-][a-zA-Z0-9_-]*(:[a-zA-Z0-9\/_-]+)?$/;
+  /^[^-][a-zA-Z0-9_-]*([^-][a-zA-Z0-9_-]*)?(:[a-zA-Z0-9\/_-]+)?$/;
 
 // Git commit IDs can be either 40-character or 7-character hexadecimal strings
 export const commitIdRegex = /^[0-9a-fA-F]{7,40}$/;
@@ -84,12 +84,12 @@ export const workflowNameMap = {
     branch: {
       fileName: "build.yml",
       jobName: "Build Dashboard",
-      stepName: "Post Install dependencies with caching",
+      stepName: "Web - PHP Server Build",
     },
     master: {
       fileName: "build.yml",
       jobName: "Build Dashboard",
-      stepName: "Post Install dependencies with caching",
+      stepName: "Web - PHP Server Build",
     },
   },
   "banking-accounts": {
@@ -190,10 +190,63 @@ export const workflowNameMap = {
       stepName: "build api",
     },
   },
+  batch: {
+    branch: {
+      fileName: "ci_batch.yml",
+      jobName: "Build Batch",
+      stepName: "Post Build and Push",
+    },
+    master: {
+      fileName: "ci_batch.yml",
+      jobName: "Build Batch",
+      stepName: "Post Build and Push",
+    },
+  },
+  ufh: {
+    branch: {
+      fileName: "build.yml",
+      jobName: "Run Build",
+      stepName: "Post build",
+    },
+    master: {
+      fileName: "build.yml",
+      jobName: "Run Build",
+      stepName: "Post build",
+    },
+  },
+  "vendor-experience": {
+    branch: {
+      fileName: "ci.yml",
+      jobName: "Merge Manifest API",
+      stepName: "Build and Push manifest",
+    },
+    master: {
+      fileName: "ci.yml",
+      jobName: "Merge Manifest API",
+      stepName: "Build and Push manifest",
+    },
+  },
+  "frontend-x": {
+    "x-vendor-portal": {
+      namespace: "x",
+      imageKeyName: "vendor_portal_image",
+      branch: {
+        fileName: "x-vendor-portal-build.yml",
+        jobName: "Beta Build",
+        stepName: "Push Artifacts to Stage S3 Cache",
+      },
+      master: {
+        fileName: "x-vendor-portal-build.yml",
+        jobName: "Beta Build",
+        stepName: "Push Artifacts to Stage S3 Cache",
+      },
+    },
+  },
 };
 
 export const namespaceToRepoNamesMap = {
   "banking-account": ["banking-accounts"],
   dashboard: ["dashboard", "admin-dashboard"],
   bvs: ["business-verification-service"],
+  x: ["x", "frontend-x"],
 };

@@ -12,11 +12,16 @@ export const errorHandler = {
     );
     exit(1);
   },
-  throwForInvalidRepoName: (repo) => {
+  throwForInvalidRepoName: (repo, repoPackage) => {
+    const repoPackageString = repoPackage
+      ? ` & REPO_PACKAGE=${repoPackage} `
+      : "";
     console.log(
       `\nunable to find ${pc.red(
-        `REPO=${repo}`
-      )} in workflowNameMap. check if the repo name if correct or the mapping exists in workflowNameMap\n`
+        `REPO=${repo}${repoPackageString}`
+      )} in workflowNameMap. check if the repo name ${
+        repoPackageString ? "repo package name" : ""
+      } is correct and the mapping exists in workflowNameMap\n`
     );
     exit(1);
   },
@@ -87,7 +92,7 @@ export const getParsedArgs = () => {
                 namespace
               )}. The namespace should be in ${pc.blue("repo")} or ${pc.blue(
                 "repo:branch"
-              )} format`
+              )} or ${pc.blue("repo:package:branch")} format`
             );
             exit(1);
           }
