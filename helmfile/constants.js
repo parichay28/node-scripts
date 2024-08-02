@@ -14,6 +14,10 @@ export const commitIdRegex = /^[0-9a-fA-F]{7,40}$/;
 
 export const defaultImageKeyName = "image";
 
+export const monorepoMap = {
+  "frontend-x": "frontend-x",
+};
+
 export const workflowNameMap = {
   x: {
     branch: {

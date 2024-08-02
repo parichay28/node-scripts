@@ -2,7 +2,7 @@ import { execSync, exec as execWithCallback } from "child_process";
 import pc from "picocolors";
 import { updateHelmfile } from "./modify-yaml.js";
 import { errorHandler, getParsedArgs, isCommitId } from "./utils.js";
-import { helmfilePath, workflowNameMap } from "./constants.js";
+import { helmfilePath, monorepoMap, workflowNameMap } from "./constants.js";
 
 const exec = (...args) => {
   return new Promise((resolve, reject) => {
@@ -52,12 +52,13 @@ const addCommitIdToMap = async (namespace, attemptCount) => {
   let repo, repoPackage, target;
   const namespaceParts = namespace.split(`:`);
 
-  if (namespaceParts.length > 2) {
-    repo = namespaceParts[0];
+  repo = namespaceParts[0];
+  const isMonorepo = repo in monorepoMap;
+
+  if (isMonorepo) {
     repoPackage = namespaceParts[1];
     target = namespaceParts[2];
   } else {
-    repo = namespaceParts[0];
     target = namespaceParts[1];
   }
 
