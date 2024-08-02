@@ -242,6 +242,30 @@ export const workflowNameMap = {
       },
     },
   },
+  "payout-links": {
+    branch: {
+      fileName: "ci.yaml",
+      jobName: "Build image for deployment and push",
+      stepName: "Build and push",
+    },
+    master: {
+      fileName: "ci.yaml",
+      jobName: "Build image for deployment and push",
+      stepName: "Build and push",
+    },
+  },
+  "vendor-payments": {
+    branch: {
+      fileName: "ci.yml",
+      jobName: "Build Image And Push",
+      stepName: "Build and Push to Harbor - v2",
+    },
+    master: {
+      fileName: "ci.yml",
+      jobName: "Build Image And Push",
+      stepName: "Build and Push to Harbor - v2",
+    },
+  },
 };
 
 export const namespaceToRepoNamesMap = {
