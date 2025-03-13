@@ -39,3 +39,7 @@
 Add the workflow name, job name & step name of the build workflow for the service that you want to onboard in `constants.js`. These can be found in `.github/workflows` folder
 
 
+## Notes on implementation approach
+
+A better way would be to use harbour to get if an image with given commit id is present or not. Though this approach works best for projects which exports docker images, it won't work for FE repos like X where we upload assets directly to S3. Hence we will end up maintaing two different versions of `has build passed on given commit id` logic. In future, we should move to this path to reduce overhead of maintaining new services.
+
